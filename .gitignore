@@ -1,0 +1,100 @@
+# ============================================================
+# .gitignore — University Threat Detection
+# ============================================================
+
+# --- Personal Claude notes & internal docs (không đưa lên repo public) ---
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+docs/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# --- Environment & Secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+secrets/
+
+# --- Data (raw logs có thể nhạy cảm) ---
+data
+data/raw/
+data/processed/
+*.log
+*.csv
+*.parquet
+*.gz
+!data/synthetic/*.csv
+!data/synthetic/metadata.json
+
+# --- ML Models (files nặng) ---
+/models/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+*.ipynb_metadata
+
+# --- IDE ---
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+
+setup.sh
+
+# --- Windows metadata ---
+*.Zone.Identifier
+
+# --- Personal folders ---
+.Duy/
+
+# --- Docker ---
+docker/volumes/
+
+# --- Testing & Coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- Logs ---
+logs/
+*.log
+!data/synthetic/*.log
+
+# Docker persistent data
+grafana-data/
+loki-data/
+postgres-data/
+
+# ML artifacts
+*.joblib
+
+
+# AI / Understand Anything
+.understand-anything/
+
+# temp graph scripts
+verify_graph.py
+verify_graph2.py

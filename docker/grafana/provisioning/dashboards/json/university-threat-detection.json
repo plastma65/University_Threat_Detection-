@@ -1,0 +1,114 @@
+{
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": { "type": "postgres", "uid": "threat_pg" },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Total Alerts",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "threat_pg" },
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(*) FROM alerts;",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      }
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "threat_pg" },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "title": "High/Critical Alerts",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "threat_pg" },
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(*) FROM alerts WHERE severity IN ('critical', 'high');",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      }
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "threat_pg" },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 4 },
+      "id": 3,
+      "title": "Alert Timeline (Hourly)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "threat_pg" },
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT $__timeGroupAlias(timestamp, '1h'), count(id) AS \"Alert Count\" FROM alerts WHERE $__timeFilter(timestamp) GROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "threat_pg" },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 4 },
+      "id": 4,
+      "title": "Top Event Types",
+      "type": "barchart",
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "threat_pg" },
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT event_type, count(id) as count FROM alerts WHERE $__timeFilter(timestamp) GROUP BY event_type ORDER BY count DESC LIMIT 10",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "postgres", "uid": "threat_pg" },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 13 },
+      "id": 5,
+      "title": "Recent Alerts",
+      "type": "table",
+      "targets": [
+        {
+          "datasource": { "type": "postgres", "uid": "threat_pg" },
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT timestamp, ip_address, source, event_type, severity, risk_score, status FROM alerts ORDER BY timestamp DESC LIMIT 50;",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["soc", "threat-detection"],
+  "time": { "from": "now-24h", "to": "now" },
+  "title": "University Threat Detection SOC",
+  "uid": "ut_soc_01",
+  "version": 2
+}

@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: University Threat Detection
+    orgId: 1
+    folder: University Threat Detection
+    type: file
+    disableDeletion: false
+    allowUiUpdates: true
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/provisioning/dashboards/json

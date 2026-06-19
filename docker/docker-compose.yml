@@ -1,0 +1,95 @@
+version: "3.8"
+
+networks:
+  threat_net:
+    driver: bridge
+
+volumes:
+  loki_data:
+  postgres_data:
+  grafana_data:
+
+services:
+
+  # ── Loki — log storage ────────────────────────────────────────────────────
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - threat_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3100/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Grafana — dashboard ───────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB:-threat_detection}
+      POSTGRES_USER: ${POSTGRES_USER:-analyst}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_dev}
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      loki:
+        condition: service_healthy
+    networks:
+      - threat_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3000/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Fluent Bit — log collector ────────────────────────────────────────────
+  fluentbit:
+    image: fluent/fluent-bit:2.2
+    container_name: fluentbit
+    restart: unless-stopped
+    volumes:
+      - ../src/collector:/fluent-bit/etc:ro   # configs + lua scripts
+      - ../data/raw:/data/raw:ro              # sample log files
+    depends_on:
+      loki:
+        condition: service_healthy
+    networks:
+      - threat_net
+
+  # ── PostgreSQL — feature & metadata DB ───────────────────────────────────
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-threat_detection}
+      POSTGRES_USER: ${POSTGRES_USER:-analyst}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_dev}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - threat_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-analyst} -d ${POSTGRES_DB:-threat_detection}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Threat Detection SOC Login</title>
+  <link rel="stylesheet" href="/dashboard/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/dashboard/css/style.css">
+</head>
+<body class="soc-body soc-login-page">
+  <main class="container py-5">
+    <div class="row justify-content-center align-items-center min-vh-100 g-4">
+      <div class="col-lg-5">
+        <section class="soc-shell soc-shell-accent p-4 p-lg-5 h-100">
+          <p class="eyebrow mb-3">Security Operations</p>
+          <h1 class="display-6 mb-3">University Threat Detection</h1>
+          <p class="text-secondary mb-4">
+            Monitor suspicious activity, review high-risk alerts, and coordinate response for university systems.
+          </p>
+          <div class="status-stack">
+            <div class="status-line">
+              <span class="status-dot"></span>
+              <span>Real-time alert overview</span>
+            </div>
+            <div class="status-line">
+              <span class="status-dot"></span>
+              <span>Role-based analyst workspace</span>
+            </div>
+            <div class="status-line">
+              <span class="status-dot"></span>
+              <span>Audit-ready investigation flow</span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="col-lg-4">
+        <section class="soc-shell p-4 p-lg-5">
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+              <p class="eyebrow mb-2">Authorized Access</p>
+              <h2 class="h3 mb-0">Sign in to continue</h2>
+            </div>
+          </div>
+
+          <form id="login-form" novalidate>
+            <div class="mb-3">
+              <label class="form-label" for="username">Username</label>
+              <input class="form-control form-control-lg" id="username" name="username" type="text" autocomplete="username" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="password">Password</label>
+              <input class="form-control form-control-lg" id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+            <div id="login-error" class="alert alert-danger d-none mb-3" role="alert"></div>
+            <button id="login-submit" class="btn btn-danger w-100 py-3" type="submit">Access Dashboard</button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="/dashboard/js/bootstrap.bundle.min.js"></script>
+  <script src="/dashboard/js/api.js"></script>
+  <script src="/dashboard/js/login.js"></script>
+</body>
+</html>

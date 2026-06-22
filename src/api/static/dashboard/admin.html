@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Threat Detection SOC Admin</title>
+  <link rel="stylesheet" href="/dashboard/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/dashboard/css/style.css">
+</head>
+<body class="soc-body">
+  <div class="container-fluid py-4 py-lg-5">
+    <header class="soc-shell p-4 mb-4">
+      <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
+        <div>
+          <p class="eyebrow mb-2">Admin Console</p>
+          <h1 class="h2 mb-2">SOC User Management</h1>
+          <p class="text-secondary mb-0">Manage operator access, roles, and audit activity.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="/dashboard/index.html" class="btn btn-outline-info">Return to Dashboard</a>
+          <button id="admin-logout-button" class="btn btn-outline-light">Logout</button>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="small text-secondary mb-1">Logged In As</div>
+        <div id="admin-current-user" class="detail-value">Loading...</div>
+      </div>
+    </header>
+
+    <div id="admin-feedback" class="status-banner d-none mb-4" role="status" aria-live="polite"></div>
+
+    <section class="row g-4">
+      <div class="col-xl-4">
+        <article class="soc-shell p-4 h-100">
+          <div class="panel-heading">
+            <div>
+              <h2 class="h5 mb-1">Create User</h2>
+              <p class="text-secondary mb-0">Create viewer, analyst, or admin accounts.</p>
+            </div>
+          </div>
+          <form id="create-user-form" class="mt-4">
+            <div class="mb-3">
+              <label class="form-label small text-secondary" for="new-username">Username</label>
+              <input id="new-username" class="form-control" required maxlength="64">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small text-secondary" for="new-password">Password</label>
+              <input id="new-password" class="form-control" type="password" required minlength="8" maxlength="255">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small text-secondary" for="new-role">Role</label>
+              <select id="new-role" class="form-select">
+                <option value="viewer">viewer</option>
+                <option value="analyst">analyst</option>
+                <option value="admin">admin</option>
+              </select>
+            </div>
+            <button id="create-user-button" type="submit" class="btn btn-info w-100">Create User</button>
+          </form>
+        </article>
+      </div>
+      <div class="col-xl-8">
+        <article class="soc-shell p-4 h-100">
+          <div class="panel-heading">
+            <div>
+              <h2 class="h5 mb-1">Dashboard Settings</h2>
+              <p class="text-secondary mb-0">Configure dashboard refresh and default view settings.</p>
+            </div>
+          </div>
+          <form id="dashboard-settings-form" class="mt-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small text-secondary" for="dashboard-poll-interval">Dashboard Refresh Interval</label>
+                <select id="dashboard-poll-interval" class="form-select">
+                  <option value="15">15 seconds</option>
+                  <option value="30">30 seconds</option>
+                  <option value="60">60 seconds</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small text-secondary" for="dashboard-default-time-range">Default Time Range</label>
+                <select id="dashboard-default-time-range" class="form-select">
+                  <option value="1">1h</option>
+                  <option value="6">6h</option>
+                  <option value="24">24h</option>
+                  <option value="168">7d</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
+            </div>
+            <div class="small text-secondary mt-3">These settings affect the dashboard view only.</div>
+            <button id="dashboard-settings-button" type="submit" class="btn btn-outline-info mt-3">Save Dashboard Settings</button>
+          </form>
+        </article>
+      </div>
+      <div class="col-xl-8">
+        <article class="soc-shell p-4 h-100">
+          <div class="panel-heading">
+            <div>
+              <h2 class="h5 mb-1">Users</h2>
+              <p class="text-secondary mb-0">Update roles and reset passwords.</p>
+            </div>
+          </div>
+          <div class="table-responsive mt-4">
+            <table class="table table-dark table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Role</th>
+                  <th>Change Role</th>
+                  <th>Reset Password</th>
+                  <th>Delete User</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body">
+                <tr><td colspan="5" class="text-secondary">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+      <div class="col-12">
+        <article class="soc-shell p-4">
+          <div class="panel-heading">
+            <div>
+              <h2 class="h5 mb-1">Audit Logs</h2>
+              <p class="text-secondary mb-0">Recent admin and triage activity.</p>
+            </div>
+          </div>
+          <div class="table-responsive mt-4">
+            <table class="table table-dark table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Actor</th>
+                  <th>Action</th>
+                  <th>Target</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table-body">
+                <tr><td colspan="5" class="text-secondary">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <script src="/dashboard/js/bootstrap.bundle.min.js"></script>
+  <script src="/dashboard/js/api.js"></script>
+  <script src="/dashboard/js/admin.js"></script>
+</body>
+</html>

@@ -1,3 +1,3 @@
-from src.api.routers import alerts, auth, stats
+from src.api.routers import admin, alerts, auth, settings, stats
 
-__all__ = ["auth", "alerts", "stats"]
+__all__ = ["auth", "alerts", "stats", "admin", "settings"]
